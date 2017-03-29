@@ -2,25 +2,26 @@ The content below is an example project proposal / requirements document. Replac
 
 (___TODO__: your project name_)
 
-# Shoppy Shoperson 
+# Tons Of Data
 
 ## Overview
 
 (___TODO__: a brief one or two paragraph, high-level description of your project_)
 
-Remembering what to buy at the grocery store is waaaaay too difficult. Also, shopping for groceries when you're hungry leads to regrettable purchases. Sooo... that's where Shoppy Shoperson comes in!
+Learning what to focus on next in a game of League is daunting. There are so many micro and macro aspects to take note of in every game. Why try and manage them yourself, instead let Tons Of Data do it for you.
 
-Shoppy Shoperson is a web app that will allow users to keep track of multiple grocery lists. Users can register and login. Once they're logged in, they can create or view their grocery list. For every list that they have, they can add items to the list or cross off items.
+Tons of Data is web app that utilizes the League of Legends API to get and track data about recent games and progress in terms of specific analytics. The goal, like any League related website is to give users a slight edge in their next journey to Summoners Rift. Once a user adds their data to the website, or refreshes their data, analytics are run in the background to datamine statistics about recent games as well as trends across multiple games. For every user, they can filter by champion and lane, and compare two individual games.
 
 
 ## Data Model
 
 (___TODO__: a description of your application's data and their relationships to each other_) 
 
-The application will store Users, Lists and Items
+The application will store Users, Games, General Metrics, Best Data
 
-* users can have multiple lists (via references)
-* each list can have multiple items (by embedding)
+* users can store multiple batches of games (via refrences)
+* each game will have multiple metrics (kills, deaths, assists, etc) - by embedding
+* each metric will have a best of (via refrences)
 
 (___TODO__: sample documents_)
 
@@ -28,25 +29,37 @@ An Example User:
 
 ```javascript
 {
-  username: "shannonshopper",
+  username: "Cruknarg",
   hash: // a password hash,
-  lists: // an array of references to List documents
+  lists: // an array of references to different games
 }
 ```
 
-An Example List with Embedded Items:
+An Example Game with Embedded Items:
 
 ```javascript
 {
   user: // a reference to a User object
-  name: "Breakfast foods",
-  items: [
-    { name: "pancakes", quantity: "9876", checked: false},
-    { name: "ramen", quantity: "2", checked: true},
-  ],
-  createdAt: // timestamp
+  game_ID:, //Riot API game number
+  metrics {
+    win:true, kills:12, deaths:3, assists:7
+    cs:271, dpm:integer //ideally as many as possible
+  },
+
 }
 ```
+
+```javascript
+{
+  user: //a reference to a User Object
+  bestOfmetrics {
+    kills:18, deaths:0, assists:24 //each embedded from another game
+    cs:312, dpm:integer //ideally as many as possible
+  }
+}
+```
+
+An Example 
 
 
 ## [Link to Commented First Draft Schema](db.js) 
@@ -78,13 +91,19 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 ## User Stories or Use Cases
 
 (___TODO__: write out how your application will be used through [user stories](http://en.wikipedia.org/wiki/User_story#Format) and / or [use cases](https://www.mongodb.com/download-center?jmp=docs&_ga=1.47552679.1838903181.1489282706#previous)_)
+"In order to get better as a player, I want to know my weaknesses so I use Tons Of Data to see where my gameplay is lacking.""
+"As a player, I want a better understanding of my damage output because I don't get a lot of kills"
+"As a person, I want to see growth for the time invested. I can track this growth, however marginal by comparing games and seeing the upward trends in my statistics."
+
+
 
 1. as non-registered user, I can register a new account with the site
 2. as a user, I can log in to the site
-3. as a user, I can create a new grocery list
-4. as a user, I can view all of the grocery lists I've created in a single list
-5. as a user, I can add items to an existing grocery list
-6. as a user, I can cross off items in an existing grocery list
+3. as a user, I can add a summoner's data to the site
+4. as a user, I can download more recent data for a summoner
+5. as a user, I can more closely inspect the metrics of an individual game
+6. as a user, I can view the best individual statistics for a summoner
+7. as a user, I can compare the metrics of 2 recent games a summoner has played
 
 ## Research Topics
 
