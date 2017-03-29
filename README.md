@@ -1,12 +1,6 @@
-The content below is an example project proposal / requirements document. Replace the text below the lines marked "__TODO__" with details specific to your project. Remove the "TODO" lines.
-
-(___TODO__: your project name_)
-
 # Tons Of Data
 
 ## Overview
-
-(___TODO__: a brief one or two paragraph, high-level description of your project_)
 
 Learning what to focus on next in a game of League is daunting. There are so many micro and macro aspects to take note of in every game. Why try and manage them yourself, instead let Tons Of Data do it for you.
 
@@ -14,8 +8,6 @@ Tons of Data is web app that utilizes the League of Legends API to get and track
 
 
 ## Data Model
-
-(___TODO__: a description of your application's data and their relationships to each other_) 
 
 The application will store Users, Games, General Metrics, Best Data
 
