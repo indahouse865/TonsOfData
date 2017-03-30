@@ -1,0 +1,103 @@
+
+body {
+  color: red;
+  font-family: Georgia;
+  background-color: #81858c;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+h1 {
+	font-size: 350%;
+	font-family: serif;
+	color: black;
+	text-align: center;
+}
+
+h2 {
+	font-family: Georgia;
+	font-size: 180%;
+	text-align: center;
+}
+
+h3 {
+	font-family: Georgia;
+}
+
+form {
+	text-align: center;
+}
+
+a:link{
+	text-decoration: none;
+}
+
+a:visited {
+	color: red;
+}
+
+.user {
+	font-size: 60%;
+	margin:0px;
+	padding:0px;
+	line-height: 1px;
+	opacity:.5;
+	color: pink;
+}
+
+.user2{
+	font-size: 85%;
+	padding:3px;
+	margin:3px;
+}
+
+
+
+.navbar {
+	list-style-type: none;
+    text-align: center;
+    width: 50%;
+    margin: auto;
+}
+
+.navbar ul {
+  list-style: none;
+  background-color: #444;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+.navbar li {
+  display: inline-block;
+  font-family: sans-serif;
+  font-size: 1.2em;
+  line-height: 40px;
+  height: 40px;
+  border: 1px solid #fff;
+}
+ 
+.navbar a {
+  color: #fff;
+  display: block;
+}
+ 
+.navbar a:hover {
+  background-color: #005f5f;
+}
+ 
+.navbar a.active {
+  background-color: #fff;
+  color: #444;
+}
+
+.best {
+	font-size: 60%;
+	color:red;
+}
+
+.forms{
+	-webkit-column-count: 2; /* Chrome, Safari, Opera */
+    -moz-column-count: 2; /* Firefox */
+    column-count: 2;
+}

@@ -21,9 +21,10 @@ An Example User:
 
 ```javascript
 {
-  username: "Cruknarg",
-  hash: // a password hash,
-  lists: // an array of references to different games
+  name: "Cruknarg",
+  id: //some integer
+  name: String
+  games: //an array of refrences to different games
 }
 ```
 
@@ -31,11 +32,14 @@ An Example Game with Embedded Items:
 
 ```javascript
 {
-  user: // a reference to a User object
-  game_ID:, //Riot API game number
-  metrics {
-    win:true, kills:12, deaths:3, assists:7
-    cs:271, dpm:integer //ideally as many as possible
+  id: // a reference to the players whose data is represented
+  gameID:, //Riot API game number
+  mode: String,
+  championId: Number,
+  stats {
+    win:true, kills:12, deaths:3, assists:7,
+    gold: 10000, timePlayed:8203, damagedealtPlayer: int,
+    cs:271, //ideally as many as possible //object from Riot Games API
   },
 
 }
@@ -43,15 +47,14 @@ An Example Game with Embedded Items:
 
 ```javascript
 {
-  user: //a reference to a User Object
+  summonerID: //a reference to a User Object
+  name: String
   bestOfmetrics {
     kills:18, deaths:0, assists:24 //each embedded from another game
-    cs:312, dpm:integer //ideally as many as possible
+    cs:312, dpm:integer //ideally as many as possible //object from Riot Games API
   }
 }
 ```
-
-An Example 
 
 
 ## [Link to Commented First Draft Schema](db.js) 
@@ -82,46 +85,37 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 
 ## User Stories or Use Cases
 
-(___TODO__: write out how your application will be used through [user stories](http://en.wikipedia.org/wiki/User_story#Format) and / or [use cases](https://www.mongodb.com/download-center?jmp=docs&_ga=1.47552679.1838903181.1489282706#previous)_)
-"In order to get better as a player, I want to know my weaknesses so I use Tons Of Data to see where my gameplay is lacking.""
-"As a player, I want a better understanding of my damage output because I don't get a lot of kills"
-"As a person, I want to see growth for the time invested. I can track this growth, however marginal by comparing games and seeing the upward trends in my statistics."
-
-
-
-1. as non-registered user, I can register a new account with the site
-2. as a user, I can log in to the site
-3. as a user, I can add a summoner's data to the site
-4. as a user, I can download more recent data for a summoner
-5. as a user, I can more closely inspect the metrics of an individual game
-6. as a user, I can view the best individual statistics for a summoner
-7. as a user, I can compare the metrics of 2 recent games a summoner has played
+1. as a user, I can add a player's data to the site
+2. as a user, I can download more recent data for a player
+3. as a user, I can more closely inspect the metrics of an individual game
+4. as a user, I can view the best individual statistics for a summoner
+5. as a user, I can view the best stats per metric on the site
+6. as a user, I can view the worst stats per metric on the site
+7. as a user, I can view the overall ranked stats for a player
 
 ## Research Topics
 
 (___TODO__: the research topics that you're planning on working on along with their point values... and the total points of research topics listed_)
 
-* (5 points) Integrate user authentication
-    * I'm going to be using passport for user authentication
-    * And account has been made for testing; I'll email you the password
-    * see <code>cs.nyu.edu/~jversoza/ait-final/register</code> for register page
-    * see <code>cs.nyu.edu/~jversoza/ait-final/login</code> for login page
-* (4 points) Perform client side form validation using a JavaScript library
-    * see <code>cs.nyu.edu/~jversoza/ait-final/my-form</code>
-    * if you put in a number that's greater than 5, an error message will appear in the dom
-* (5 points) vue.js
-    * used vue.js as the frontend framework; it's a challenging library to learn, so I've assigned it 5 points
+* (6 points) Riot Games API 
+    * All data is coming from Riot Games API
+    * users use player names to generate data
+    * Data retrieved from API is used in my data model 
+    * A user's data must be added to the database before aggregation can begin
+    * Totals and Min/Max objects are based entirely off of data retrieved from API
+* (3 points) Async Methods
+    * Use Waterfall to order API calls and effectively organize API calls
+    * Organization structure is handled by Async
+* (1 Point) Client Side Form Validation
+    * All requests will be run against the Riot Games API and returned before data is displayed
+    * Client Side Form Validation with custom responses in hbs triggered by js events
 
-10 points total out of 8 required points (___TODO__: addtional points will __not__ count for extra credit_)
+10 points total out of 8 required points
 
 
 ## [Link to Initial Main Project File](app.js) 
 
-(___TODO__: create a skeleton Express application with a package.json, app.js, views folder, etc. ... and link to your initial app.js_)
-
 ## Annotations / References Used
 
-(___TODO__: list any tutorials/references/etc. that you've based your code off of_)
-
-1. [passport.js authentication docs](http://passportjs.org/docs) - (add link to source code that was based on this)
-2. [tutorial on vue.js](https://vuejs.org/v2/guide/) - (add link to source code that was based on this)
+1. [Riot Games API Documentation](https://developer.riotgames.com/api-methods/)
+2. [async Documentation](https://caolan.github.io/async/docs.html) 

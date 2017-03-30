@@ -1,0 +1,28 @@
+
+<h1> Top Stats Across The App<h1>
+
+<div id="bestFilter">
+<form method="GET" action="">
+	<input type="radio" name="filter" value="Best">Best
+	<input type="radio" name="filter" value="Worst">Worst
+	<input type="submit" value="Choose">
+</form>
+</div>
+</br>
+
+
+{{#each bestOf}}
+<div class="best">
+Best Stat in: {{@key}}
+is {{this.number}}</br>
+By: {{this.summonerID}}
+</div>
+{{/each}}
+
+{{#each worstOf}}
+<div class="best">
+Worst Stat in: {{@key}}
+is {{this.number}}</br>
+By: {{this.summonerID}}
+</div>
+{{/each}}

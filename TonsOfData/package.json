@@ -1,0 +1,22 @@
+{
+  "name": "tonsofdata",
+  "version": "1.0.0",
+  "description": "Tons Of Data App - initial development",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Estrich",
+  "license": "ISC",
+  "devDependencies": {
+    "async": "^2.2.0",
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "express-session": "^1.15.2",
+    "handlebars": "^4.0.6",
+    "hbs": "^4.0.1",
+    "mongoose": "^4.9.2",
+    "mongoose-url-slugs": "^0.2.1",
+    "request": "^2.81.0"
+  }
+}
