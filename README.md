@@ -90,8 +90,6 @@ Here is a site map for what the site will look like:
 
 ## Research Topics
 
-(___TODO__: the research topics that you're planning on working on along with their point values... and the total points of research topics listed_)
-
 * (5 points) Riot Games API 
     * All data is coming from Riot Games API
     * users use player names to generate data
