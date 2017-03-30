@@ -57,39 +57,37 @@ An Example of Total Ranked Stats
 ```
 
 
-## [Link to Commented First Draft Schema](TonsOdData/db.js) 
+## [Link to Commented First Draft Schema](TonsOfData/db.js) 
 
 ## Wireframes
 
-(___TODO__: wireframes for all of the pages on your site; they can be as simple as photos of drawings or you can use a tool like Balsamiq, Omnigraffle, etc._)
+/ - Homepage and /summoner page showing inital page and page after a player is searched
 
-/list/create - page for creating a new shopping list
+![homepage](documentation/home-and-summ.jpg)
 
-![list create](documentation/list-create.png)
+/summonerID:slug/game:slug and /bestOf- pages for showing specific game information and the overall best stats on the site
 
-/list - page for showing all shopping lists
+![game and legendary](documentation/game-and-legendary.jpg)
 
-![list](documentation/list.png)
+/bestOf/slug and /rankedStats - pages for a persons individual best of stats and the overall combined ranked stats of all games
 
-/list/slug - page for showing specific shopping list
-
-![list](documentation/list-slug.png)
+![ranked stats](documentation/stats-and-ranked.jpg)
 
 ## Site map
 
 (___TODO__: draw out a site map that shows how pages are related to each other_)
 
-Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia/commons/2/20/Sitemap_google.jpg), but you can create one without the screenshots, drop shadows, etc. ... just names of pages and where they flow to.
+Here is a site map for what the site will look like [sitemap](documentation/sitemap.jpg)
 
 ## User Stories or Use Cases
 
 1. as a user, I can add a player's data to the site
 2. as a user, I can download more recent data for a player
-3. as a user, I can more closely inspect the metrics of an individual game
-4. as a user, I can view the best individual statistics for a summoner
-5. as a user, I can view the best stats per metric on the site
-6. as a user, I can view the worst stats per metric on the site
-7. as a user, I can view the overall ranked stats for a player
+3. as a user, I can more closely inspect the metrics of an individual game stored in the database
+4. as a user, I can view the best stats per metric on the site
+5. as a user, I can view the worst stats per metric on the site
+6. as a user, I can view the overall ranked stats for a player
+7. as a user, I can view the total combination of ranked stats of all games the site refrences
 
 ## Research Topics
 

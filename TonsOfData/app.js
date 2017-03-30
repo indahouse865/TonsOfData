@@ -84,11 +84,13 @@ app.post('/newSumm', (req, res) => {
 	res.redirect('/');
 });
 
+//create page for user with post and redirect
+
 app.get('/Legendary', (req, res) => {
-	if (req.query.filter === "Best") {
+	if (req.query.Awards === "Best") {
 		console.log(bestOf);
 		res.render('best', {bestOf: bestOf});
-	} else if (req.query.filter === "Worst") {
+	} else if (req.query.Awards === "Worst") {
 		res.render('best', {worstOf: worstOf});
 	} else {
 		res.render('best');
