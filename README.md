@@ -74,10 +74,9 @@ An Example of Total Ranked Stats
 ![ranked stats](documentation/stats-and-ranked.jpg)
 
 ## Site map
+Here is a site map for what the site will look like:
 
-(___TODO__: draw out a site map that shows how pages are related to each other_)
-
-Here is a site map for what the site will look like [sitemap](documentation/sitemap.jpg)
+![sitemap](documentation/sitemap.jpg)
 
 ## User Stories or Use Cases
 
