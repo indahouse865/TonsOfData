@@ -15,15 +15,12 @@ The application will store Users, Games, General Metrics, Best Data
 * each game will have multiple metrics (kills, deaths, assists, etc) - by embedding
 * each metric will have a best of (via refrences)
 
-(___TODO__: sample documents_)
-
 An Example User:
 
 ```javascript
 {
   name: "Cruknarg",
-  id: //some integer
-  name: String
+  id: 64872106812
   games: //an array of refrences to different games
 }
 ```
@@ -32,34 +29,35 @@ An Example Game with Embedded Items:
 
 ```javascript
 {
-  id: // a reference to the players whose data is represented
-  gameID:, //Riot API game number
-  mode: String,
-  championId: Number,
+  id: 64872106812 // a reference to the players whose data is represented
+  gameID:, 3229820//Riot API game number
+  mode: Ranked,
+  championId: 67,
   stats {
     win:true, kills:12, deaths:3, assists:7,
     gold: 10000, timePlayed:8203, damagedealtPlayer: int,
-    cs:271, //ideally as many as possible //object from Riot Games API
+    cs:271, //ideally as many as possible 
+    //object from Riot Games API
   },
 
 }
 ```
 
+An Example of Total Ranked Stats
+
 ```javascript
 {
-  summonerID: //a reference to a User Object
-  name: String
+  summonerID: 64872106812//a reference to a User Object
+  name: Dyrus
   bestOfmetrics {
-    kills:18, deaths:0, assists:24 //each embedded from another game
-    cs:312, dpm:integer //ideally as many as possible //object from Riot Games API
+    kills:18, deaths:0, assists:24
+    cs:312, dpm:integer  //object from Riot Games API
   }
 }
 ```
 
 
-## [Link to Commented First Draft Schema](db.js) 
-
-(___TODO__: create a first draft of your Schemas in db.js and link to it_)
+## [Link to Commented First Draft Schema](TonsOdData/db.js) 
 
 ## Wireframes
 
@@ -97,7 +95,7 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 
 (___TODO__: the research topics that you're planning on working on along with their point values... and the total points of research topics listed_)
 
-* (6 points) Riot Games API 
+* (5 points) Riot Games API 
     * All data is coming from Riot Games API
     * users use player names to generate data
     * Data retrieved from API is used in my data model 
@@ -106,14 +104,14 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 * (3 points) Async Methods
     * Use Waterfall to order API calls and effectively organize API calls
     * Organization structure is handled by Async
-* (1 Point) Client Side Form Validation
+* (3 Point) Client Side Form Validation
     * All requests will be run against the Riot Games API and returned before data is displayed
     * Client Side Form Validation with custom responses in hbs triggered by js events
 
-10 points total out of 8 required points
+11 points total out of 8 required points
 
 
-## [Link to Initial Main Project File](app.js) 
+## [Link to Initial Main Project File](TonsOfData/app.js) 
 
 ## Annotations / References Used
 

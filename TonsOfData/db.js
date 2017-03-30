@@ -23,9 +23,10 @@ const user = new Schema({
 	games: [game]
 });
 
-linkSchema.plugin(URLSlugs('title'));
+user.plugin(URLSlugs('name'));
 
 mongoose.model('user', user);
 mongoose.model('game', game);
+mongoose.model('bestOf', bestOf);
 
 mongoose.connect('mongodb://localhost/final');
