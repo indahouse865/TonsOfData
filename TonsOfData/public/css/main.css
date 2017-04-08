@@ -23,6 +23,7 @@ h2 {
 
 h3 {
 	font-family: Georgia;
+  color: white;
 }
 
 form {
@@ -52,13 +53,22 @@ a:visited {
 	margin:3px;
 }
 
+#full {
+  width:100%;
+  margin-top: 0px;
+  margin-left: 0px;
+  position: fixed; top:0; left:0
+}
 
+#toC {
+  width: 25%;
+}
 
 .navbar {
 	list-style-type: none;
-    text-align: center;
-    width: 50%;
-    margin: auto;
+  text-align: center;
+  width: 50%;
+  margin: auto;
 }
 
 .navbar ul {
@@ -100,4 +110,8 @@ a:visited {
 	-webkit-column-count: 2; /* Chrome, Safari, Opera */
     -moz-column-count: 2; /* Firefox */
     column-count: 2;
+}
+
+#content {
+  padding-top: 40px;
 }

@@ -9,7 +9,7 @@
   "author": "David Estrich",
   "license": "ISC",
   "devDependencies": {
-    "async": "^2.2.0",
+    "async": "^2.3.0",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "express-session": "^1.15.2",

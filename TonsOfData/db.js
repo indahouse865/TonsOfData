@@ -20,7 +20,8 @@ const bestOf = new Schema({
 const user = new Schema({
 	name: String,
 	id: Number,
-	games: [game]
+	games: [game],
+	level: Number,
 });
 
 user.plugin(URLSlugs('name'));
@@ -29,4 +30,25 @@ mongoose.model('user', user);
 mongoose.model('game', game);
 mongoose.model('bestOf', bestOf);
 
-mongoose.connect('mongodb://localhost/final');
+//copied from code provided by professor Versoza at https://foureyes.github.io/csci-ua.0480-spring2017-008/homework/deploy.html
+// is the environment variable, NODE_ENV, set to PRODUCTION? 
+let dbconf;
+
+if (process.env.NODE_ENV === 'PRODUCTION') {
+ // if we're in PRODUCTION mode, then read the configration from a file
+ // use blocking file io to do this...
+ const fs = require('fs');
+ const path = require('path');
+ const fn = path.join(__dirname, 'config.json');
+ const data = fs.readFileSync(fn);
+
+ // our configuration file will be in json, so parse it and set the
+ // conenction string appropriately!
+ const conf = JSON.parse(data);
+ dbconf = conf.dbconf;
+} else {
+ // if we're not in PRODUCTION mode, then use
+ dbconf = 'mongodb://localhost/final';
+}
+
+mongoose.connect(dbconf);

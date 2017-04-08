@@ -4,13 +4,29 @@
 
 <div class=forms>
 <form method="GET" action="">
-	Summoner Name: <input type="text" name="summoner" value="">
-	<input type="submit" value="Search Summoner!">
+	Add Summoner Name: <input type="text" name="summoner" value="">
+	<input type="submit" value="Add Summoner!">
 </form>
 
+{{info}}
 {{error}}
-<form method="POST" action="newSumm">
-	Add A Summoner: <input type="text" name="newsummoner" value="">
-	<input type="submit" value="Add Summoner!"
+<form method="POST" action="summData">
+	View A Summoner's Data: <input type="text" name="newsummoner" value="">
+	<input type="submit" value="View Summoner!"
 </form>
 </div>
+
+{{existing}}
+
+{{#if newUser}}
+<div id=userDisplay>
+{{newUser}}
+</br>
+</br>
+{{newUser.level}}
+</div>
+{{/if}}
+
+</br>
+<p class=none>{{NOPE}}</p>
+<p class=none>{{NOPE2}}</p>
