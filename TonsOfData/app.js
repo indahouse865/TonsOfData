@@ -73,7 +73,9 @@ app.get('/', (req, res) => {
 
 		//cleaned version of name for object
 		nameS=nameSearch.toLowerCase();
-		nameS=nameS.replace(/\s+/, "") 
+		console.log("NAMES LOWER CASE: ", nameS);
+		nameS=nameS.replace(/\s+/g, "");
+		console.log("NAMES NO SPACE: ", nameS);
 
 		//search database
 		user.findOne({name: nameSearch}, (err, name, count) => {
@@ -95,7 +97,7 @@ app.get('/', (req, res) => {
 						//urlCalling = baseURL + req.query.summoner + apiKey + key
 						urlCalling = userRequest+nameS+apiKey+key;
 						console.log(urlCalling);
-						console.log("No user found and searching RIOT")
+						console.log("No user found and searching RIOT");
 						request(urlCalling, function(err, response, body) {
 							if (!err && response.statusCode === 200) {
 								console.log("user found in RIOT");
