@@ -16,12 +16,24 @@
 </form>
 </div>
 
-{{existing}}
+{{#if existing}}
+<div class=userDisplay
+</br></br>
+Summoner Name: {{existing.name}}
+</br></br>
+Summoner ID: {{existing.id}}
+</br></br>
+Summoner Level: {{existing.level}}
+</div>
+{{/if}}
+
 
 {{#if newUser}}
-<div id=userDisplay>
-{{newUser}}
+<div class=userDisplay>
 </br>
+{{this.name}}
+</br>
+{{newUser.id}}
 </br>
 {{newUser.level}}
 </div>
