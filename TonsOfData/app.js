@@ -113,12 +113,10 @@ function Best(checker, name) {
 }
 
 function Worst(checker, name) {
-	console.log("HEY");
 	if (checker.stats.championsKilled < worstOf.kills.number) {
 		worstOf.kills.number = checker.stats.championsKilled;
 		worstOf.kills.summonerID = name;
 		worstOf.kills.champion = checker.championName;
-		console.log("HI");
 	}
 	if (checker.stats.numDeaths > worstOf.deaths.number) {
 		worstOf.deaths.number = checker.stats.numDeaths;
@@ -162,7 +160,7 @@ function reqGames(un, uID) {
 	async.waterfall([
 		function(nextCall) {
 			request(gamesURL, function(err, response, games) {
-				if (!err && response.statusCode >= 200 && response.statusCode <= 400) { //good response
+				if (!err && response.statusCode === 200) { //good response
 					//games.foreach
 					//create new game object
 					//push new game object to user
@@ -246,7 +244,7 @@ function reqGames(un, uID) {
 						} //end if ranked game 
 					}); //end forEach 
 
-				} else if (!err && response.statusCode >= 400) { //some error on riots side
+				} else if (!err && response.statusCode === 404) { //some error on riots side
 					console.log("There was an error on the RIOT side");
 				}  else { //internal error
 					console.log("ERROR LOADING RECENT GAMES");
@@ -390,7 +388,6 @@ app.get('/User/:slug', (req, res) => {
 
 app.get('/Legendary', (req, res) => {
 	if (req.query.Awards === "Best") {
-		console.log(bestOf);
 		res.render('best', {bestOf: bestOf});
 	} else if (req.query.Awards === "Worst") {
 		res.render('best', {worstOf: worstOf});
