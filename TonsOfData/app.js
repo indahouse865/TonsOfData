@@ -262,7 +262,7 @@ function reqGames(un, uID) {
 	],
 	function(err, newUser) {
 		if(err) {
-			console.log(err);
+			console.log("ERROR in req games waterfall: ", err);
 			return;
 		} else {
 			
@@ -303,7 +303,7 @@ app.get('/', (req, res) => {
 				],
 				function (err, status) {
 					if (err) {
-						console.log(err);
+						console.log("ERROR IN GET db WATERFALL!: ", err);
 					} else {console.log(status);}
 				});		
 
@@ -354,7 +354,7 @@ app.get('/', (req, res) => {
 
 				function(err, newUser) {
 					if(err) {
-						console.log(err);
+						console.log("ERROR IN new user water fall!: ",err);
 						return;
 					} else {
 						res.render('home', {newUser: newUser})
