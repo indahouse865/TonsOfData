@@ -243,14 +243,21 @@ function reqGames(un, uID) {
 							}); //end user.findOne
 						} //end if ranked game 
 					}); //end forEach 
-
+					nextCall(null, "success");
 				} else if (!err && response.statusCode === 404) { //some error on riots side
+					console.log(gamesURL);
 					console.log("There was an error on the RIOT side");
+					nextCall(null, "404");
 				}  else { //internal error
 					console.log("ERROR LOADING RECENT GAMES");
 					console.log(err);
+					nextCall(null, "Other Errors");
 				}
 			});
+		},
+
+		function(callback) {
+			console.log("SUCCEEDED IN reqGames the async");
 		}
 	],
 	function(err, newUser) {
@@ -283,17 +290,28 @@ app.get('/', (req, res) => {
 				summonerName = name.name;
 				summonerID = name.id;
 				
-				reqGames(summonerName, summonerID);				
+				async.waterfall([
+					function(callback) {
+						reqGames(summonerName, summonerID);
+						callback(null);
+					},
+					function(callback) {
+						res.render('home', {existing:name});
+						callback(null,':D');
+					}
 
-				res.render('home', {existing:name});
-
+				],
+				function (err, status) {
+					if (err) {
+						console.log(err);
+					} else {console.log(status);}
+				});		
 
 			} else if (err) { //eror
 				console.log(err);
 			} else { //adding user to database
 				async.waterfall([
 					function(toCall) {
-						//urlCalling = baseURL + req.query.summoner + apiKey + key
 						urlCalling = userRequest+nameS+apiKey+key;
 						console.log("No user found and searching RIOT");
 						request(urlCalling, function(err, response, body) {

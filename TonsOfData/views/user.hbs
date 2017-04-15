@@ -10,15 +10,36 @@
 {{#if ele}}
 	<p>Summoner Name: {{ele.name}}</p>
 	<h3>LeveL: {{ele.level}}</h3>
-		{{#each ele.games as |next|}}
-			<div class=gameResult>
-				{{this.id}}
-				{{this.gameId}}
-				Champion: {{this.championId}}
-				Game Result: {{this.result}}
-				Champion: {{this.championName}}
+	<div class="gameResult">
+		{{#each ele.games}}
+			<div class="gameStat">
+			User ID: {{this.id}}
 			</div>
+
+			<div class="gameStat">
+			Game ID: {{this.gameId}}
+			</div>
+			
+			<div class="gameStat">
+			Champion ID:Champion: {{this.championId}}
+			</div>
+			
+			<div class="gameStat">
+			{{#if this.result}}
+			Game Result: Win
+			{{else}}
+			GameResult: Loss
+			{{/if}}
+			</div>
+			
+			<div class="gameStat">
+			Champion: {{this.championName}}
+			</div>
+			
+			</br>
+			<div class="Clearer"></div>
 		{{/each}}
+	</div>
 {{/if}}
 
 <p></p>
