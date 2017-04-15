@@ -78,7 +78,8 @@ a:link{
   font-size: 1.2em;
   line-height: 40px;
   height: 40px;
-  border: 1px solid #fff;
+  padding-left: 5px;
+  padding-right: 5px;
 }
  
 .navbar a {
@@ -97,7 +98,7 @@ a:link{
 
 .best {
 	font-size: 60%;
-	color:red;
+	color:#680E4B;
 }
 
 .forms{

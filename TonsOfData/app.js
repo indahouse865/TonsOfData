@@ -405,7 +405,7 @@ app.get('/RankedStats', (req, res) => {
 	if (req.query.summonerID !== "" || null) {
 		//make ranked stats 
 		//send only
-		res.render('ranked')
+		res.render('ranked', {overall:overall});
 	} else {
 		res.render('ranked', {overall:overall});
 	}
