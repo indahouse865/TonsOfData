@@ -315,7 +315,7 @@ app.get('/', (req, res) => {
 						urlCalling = userRequest+nameS+apiKey+key;
 						console.log("No user found and searching RIOT", nameS);
 						request(urlCalling, function(err, response, body) {
-							if (!err && response.statusCode === 200) {
+							if (!err && response.statusCode >= 200 && response.statusCode <=400) {
 								console.log("REQUEST?");
 								let Body = JSON.parse(body);
 								console.log("User being added is: ", Body);
