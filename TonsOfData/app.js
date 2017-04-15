@@ -342,9 +342,11 @@ app.get('/', (req, res) => {
 							} else if (!err && response.statusCode === 404) {
 								console.log("ERROR CODE IS", response.statusCode);
 								res.render('home', {NOPE: "Invalid user: " +nameS+ " please use a valid summoner name", NOPE2:"Make sure spaces and capitalizations are included."});
-							} else {
+							} else if (err) {
 								res.render('home', {Error: "Some error occured. Please try again"});
 								console.log("BAD FUCKING ERRROR", err);
+							} else {
+								console.log("THINK I GIVE UP");
 							}
 						}); //actual request
 
