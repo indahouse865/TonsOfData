@@ -8,13 +8,19 @@
 	<input type="submit" value="Add Summoner!">
 </form>
 
+
+
 {{info}}
 {{error}}
+
 <form method="POST" action="summData">
 	View A Summoner's Data: <input type="text" name="newsummoner" value="">
-	<input type="submit" value="View Summoner!"
+	<input type="submit" value="View Summoner!">
 </form>
+
 </div>
+
+
 
 {{#if existing}}
 <div class=userDisplay
@@ -30,6 +36,8 @@ Summoner Level: {{existing.level}}
 
 {{#if newUser}}
 <div class=userDisplay>
+
+<p>User being added to database:</p>
 </br>
 Summoner Name: {{newUser.name}}
 </br>
@@ -38,7 +46,7 @@ Summoner ID: {{newUser.id}}
 Summoner Level: {{newUser.level}}
 </div>
 {{/if}}
-
 </br>
+
 <p class=none>{{NOPE}}</p>
 <p class=none>{{NOPE2}}</p>

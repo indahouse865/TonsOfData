@@ -1,3 +1,7 @@
+//lines to look at with joe 99 and  270 + 285
+//also how to make sure bestOf is still a separate collection
+//hw 5 grade?
+
 // app.js
 const express = require('express');
 const app = express();
@@ -9,45 +13,56 @@ const async = require('async');
 require('./db');
 const mongoose = require('mongoose');
 const user = mongoose.model('user');
-const game = mongoose.model('game');
+const gameList = mongoose.model('game');
 const best = mongoose.model('bestOf');
 
 //public middleware
-app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: false}));
 
 
+ //handle key using obstruction
+const fs = require('fs');
+const fnKey = path.join(__dirname, 'config2.json');
+const dataKey = fs.readFileSync(fnKey);
+
+// our configuration file will be in json, so parse it and set the
+// conenction string appropriately!
+const confKey = JSON.parse(dataKey);
+const key = confKey.key; //true key
 
 //api key
-const key = 'RGAPI-6005b170-e613-4899-a490-ad0003c8c7f7';
 const request = require('request');
-const userRequest = "https://na.api.riotgames.com/api/lol/NA/v1.4/summoner/by-name/"
+const userRequest = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/"
 const apiKey = "?api_key=";
 
 let nameS = "";
+
+const gameRequest = "https://na.api.riotgames.com/api/lol/NA/v1.3/game/by-summoner/";
+const recent = "/recent?api_key=";
 
 //All Requirements above this
 
 //bestOf object to keep track of best of data in the app
 let bestOf = {
-	kills: {number: 0, summonerID: "test"},
-	deaths: {number: 100, summonerID: "test"},
-	assists: {number: 0, summonerID: "test"},
-	gold: {number: 0, summonerID: "test"},
-	damage: {number: 0, summonerID: "test"},
-	heals: {number: 0, summonerID: "test"},
+	kills: {number: 0, summonerID: "test", champion: "NAME"},
+	deaths: {number: 100, summonerID: "test", champion: "NAME"},
+	assists: {number: 0, summonerID: "test", champion: "NAME"},
+	gold: {number: 0, summonerID: "test", champion: "NAME"},
+	damage: {number: 0, summonerID: "test", champion: "NAME"},
+	heals: {number: 0, summonerID: "test", champion: "NAME"},
 };
 
 let worstOf = {
-	kills: {number: 100, summonerID: "test"},
-	deaths: {number: 0, summonerID: "test"},
-	assists: {number: 100, summonerID: "test"},
-	gold: {number: 100000, summonerID: "test"},
-	damage: {number: 100000, summonerID: "test"},
-	heals: {number: 100000, summonerID: "test"},
+	kills: {number: 100, summonerID: "test", champion: "NAME"},
+	deaths: {number: 0, summonerID: "test", champion: "NAME"},
+	assists: {number: 100, summonerID: "test", champion: "NAME"},
+	gold: {number: 100000, summonerID: "test", champion: "NAME"},
+	damage: {number: 100000, summonerID: "test", champion: "NAME"},
+	heals: {number: 100000, summonerID: "test", champion: "NAME"},
 };
 
 let overall = {
@@ -60,7 +75,195 @@ let overall = {
 }
 
 
+	
 
+function Best(checker, name) {
+	if (checker.stats.championsKilled > bestOf.kills.number) {
+		bestOf.kills.number = checker.stats.championsKilled;
+		bestOf.kills.summonerID = name;
+		bestOf.kills.champion = checker.championName;
+	}
+	if (checker.stats.numDeaths < bestOf.deaths.number) {
+		bestOf.deaths.number = checker.stats.numDeaths;
+		bestOf.deaths.summonerID = name;
+		bestOf.deaths.champion = checker.championName;
+	}
+	if (checker.stats.assists > bestOf.assists.number) {
+		bestOf.assists.number = checker.stats.assists;
+		bestOf.assists.summonerID = name;
+		bestOf.assists.champion = checker.championName;
+	}
+	if (checker.stats.goldEarned > bestOf.gold.number) {
+		bestOf.gold.number = checker.stats.goldEarned;
+		bestOf.gold.summonerID = name;
+		bestOf.gold.champion = checker.championName;
+	}
+	if (checker.stats.totalDamageDealtToChampions > bestOf.damage.number) {
+		bestOf.damage.number = checker.stats.totalDamageDealtToChampions;
+		bestOf.damage.summonerID = name;
+		bestOf.damage.champion = checker.championName;
+	}
+	if (checker.stats.totalHeal > bestOf.heals.number) {
+		bestOf.heals.number = checker.stats.totalHeal;
+		bestOf.heals.summonerID = name;
+		bestOf.heals.champion = checker.championName;
+	}
+
+
+}
+
+function Worst(checker, name) {
+	console.log("HEY");
+	if (checker.stats.championsKilled < worstOf.kills.number) {
+		worstOf.kills.number = checker.stats.championsKilled;
+		worstOf.kills.summonerID = name;
+		worstOf.kills.champion = checker.championName;
+		console.log("HI");
+	}
+	if (checker.stats.numDeaths > worstOf.deaths.number) {
+		worstOf.deaths.number = checker.stats.numDeaths;
+		worstOf.deaths.summonerID = name;
+		worstOf.deaths.champion = checker.championName;
+	}
+	if (checker.stats.assists < bestOf.assists.number) {
+		worstOf.assists.number = checker.stats.assists;
+		worstOf.assists.summonerID = name;
+		worstOf.assists.champion = checker.championName;
+	}
+	if (checker.stats.goldEarned < worstOf.gold.number) {
+		worstOf.gold.number = checker.stats.goldEarned;
+		worstOf.gold.summonerID = name;
+		worstOf.gold.champion = checker.championName;
+	}
+	if (checker.stats.totalDamageDealtToChampions < worstOf.damage.number) {
+		worstOf.damage.number = checker.stats.totalDamageDealtToChampions;
+		worstOf.damage.summonerID = name;
+		worstOf.damage.champion = checker.championName;
+	}
+	if (checker.stats.totalHeal < worstOf.heals.number) {
+		worstOf.heals.number = checker.stats.totalHeal;
+		worstOf.heals.summonerID = name;
+		worstOf.heals.champion = checker.championName;
+	}
+
+}
+
+function personal(checker) {
+	overall.kills.number += (+checker.stats.championsKilled || 0);
+	overall.deaths.number += (+checker.stats.numDeaths || 0);
+	overall.assists.number += (+checker.stats.assists || 0); 
+	overall.gold.number += checker.stats.goldEarned;
+	overall.damage.number += (+checker.stats.totalDamageDealtToChampions || 0);
+	overall.heals.number += (+checker.stats.totalHeal || 0);
+}
+
+function reqGames(un, uID) {
+	const gamesURL = gameRequest + uID + recent + key;
+	async.waterfall([
+		function(nextCall) {
+			request(gamesURL, function(err, response, games) {
+				if (!err && response.statusCode >= 200 && response.statusCode <= 400) { //good response
+					//games.foreach
+					//create new game object
+					//push new game object to user
+					console.log("GAMES OBJECT SUCCESSFULLY LOADED");
+					let gamesO = JSON.parse(games);
+
+					gamesO.games.forEach(game => {
+						if (game.subType === "RANKED_SOLO_5x5" || game.subType === "RANKED_TEAM_5x5" || game.subType === "RANKED_FLEX_SR") { //only consider ranked games
+
+
+
+
+
+
+						////////////GET HELP FROM JOE
+						//I want to find a game with id: x and gameId Y
+						//If that document isnt present I want to create and add it
+						//however i can keep calling the same request and it will keep adding the same documents
+						//why is result always null
+
+
+
+
+							gameList.findOne( {id: uID, gameId: game.id}, (err, result, count) => { //search game database for game for this user, use both id and game id since
+								//multiple players can use the same gameID but metrics are specific to the player for each game
+
+								if (err) {
+									console.log(err);
+								} else if (!err && result) {
+									console.log("GAME ALREADY LOADED full search");
+								} else {
+									console.log("game will be added to db");
+									let champName = "";
+
+									champReq = "https://global.api.riotgames.com/api/lol/static-data/NA/v1.2/champion/" + game.championId + apiKey + key;
+									request(champReq, function(err, response, champ) {
+										if (!err && response.statusCode === 200) {
+											let cData = JSON.parse(champ);
+											champName = cData.name;
+										}
+									
+
+										const newGame = new gameList({
+											id: uID,
+											gameId: game.gameId,
+											mode: game.subType,
+											championId: game.championId,
+											stats: game.stats, //imported from Riot Games APi
+											result: game.stats.win,
+											level: game.level,
+											championId: game.championId,
+											spell1: game.spell1,
+											spell2: game.spell1,
+											championName: champName,
+										});
+
+										newGame.save(function(err, newG, count) {
+											if (err) {
+												console.log("ERROR SAVING");
+												res.send(err);
+												res.send('an error has occurred, please check the server output' + err);
+											} else {
+											}
+										});
+
+										user.findOneAndUpdate({name:un}, {$push: {games: newGame}}, function(err, ele, count) {
+											if (err) {
+												console.log("ERROR LOADING GAME INTO DATABASE");
+												console.log(err);
+											} else {
+												console.log("Game was added!", newGame.gameId);
+											}
+										}); //end save game to user.games lsit
+
+										Best(newGame, un);
+										Worst(newGame, un);
+										personal(newGame);
+									}); //end get champion name request promise
+								} //end else statement
+							}); //end user.findOne
+						} //end if ranked game 
+					}); //end forEach 
+
+				} else if (!err && response.statusCode >= 400) { //some error on riots side
+					console.log("There was an error on the RIOT side");
+				}  else { //internal error
+					console.log("ERROR LOADING RECENT GAMES");
+					console.log(err);
+				}
+			});
+		}
+	],
+	function(err, newUser) {
+		if(err) {
+			console.log(err);
+			return;
+		} else {
+			
+		}
+	}); 
+}
 
 //Route Handlers
 app.get('/', (req, res) => {
@@ -73,20 +276,18 @@ app.get('/', (req, res) => {
 
 		//cleaned version of name for object
 		nameS=nameSearch.toLowerCase();
-		console.log("NAMES LOWER CASE: ", nameS);
 		nameS=nameS.replace(/\s+/g, "");
-		console.log("NAMES NO SPACE: ", nameS);
 
 		//search database
 		user.findOne({name: nameSearch}, (err, name, count) => {
 			if (!err && name) { //found
 				console.log("USER WAS FOUND");
+				summonerName = name.name;
+				summonerID = name.id;
+				
+				reqGames(summonerName, summonerID);				
+
 				res.render('home', {existing:name});
-
-				//in callback
-				//add recent games
-				//compute best
-
 
 
 			} else if (err) { //eror
@@ -96,22 +297,17 @@ app.get('/', (req, res) => {
 					function(toCall) {
 						//urlCalling = baseURL + req.query.summoner + apiKey + key
 						urlCalling = userRequest+nameS+apiKey+key;
-						console.log(urlCalling);
 						console.log("No user found and searching RIOT");
 						request(urlCalling, function(err, response, body) {
 							if (!err && response.statusCode === 200) {
-								console.log("user found in RIOT");
 								let Body = JSON.parse(body);
-								console.log(Body);
-
 
 								console.log("User being added is: ", Body);
 								let newUser = new user({
-									id: Body[nameS].id,
-									name: Body[nameS].name,
-									level: Body[nameS].summonerLevel, 
+									id: Body.id,
+									name: Body.name,
+									level: Body.summonerLevel, 
 								});
-
 
 								newUser.save(function(err, newU, count) {
 									if (err) {
@@ -122,9 +318,14 @@ app.get('/', (req, res) => {
 										toCall(null, newUser); //exit waterfall with completion
 									}
 								});
+
+								summonerName = Body.name;
+								summonerID = Body.id;
+								reqGames(summonerName, summonerID);	 //add recent games
+
 							} else if (!err && response.statusCode === 404) {
 								console.log("ERROR CODE IS", response.statusCode);
-								res.render('home', {NOPE: "Invalid user: please use a valid summoner name", NOPE2:"Make sure spaces and capitalizations are included"});
+								res.render('home', {NOPE: "Invalid user: " +nameS+ " please use a valid summoner name", NOPE2:"Make sure spaces and capitalizations are included."});
 							} else {
 								res.render('home', {Error: "Some error occured. Please try again"});
 								console.log(err);
@@ -140,11 +341,6 @@ app.get('/', (req, res) => {
 						console.log(err);
 						return;
 					} else {
-
-
-						//add recent games by making a call here as well
-
-
 						res.render('home', {newUser: newUser})
 					}
 				}); //callback function
@@ -156,12 +352,41 @@ app.get('/', (req, res) => {
 	}
 });
 
-app.post('/summData/:slug', (req, res) => {
-	//handle adding summoner
-	res.render('/summonerData/:slug');
+
+//USER DATA PAGE
+app.post('/summData', (req, res) => {
+	const summSearch = req.body.newsummoner;
+	user.findOne({name: summSearch}, (err, result, count) => {
+		if (err) {
+			console.log(err);
+			res.send(err);
+			res.send('an error has occurred, please check the server output' + err);
+		} else if (!err && result) {
+			console.log(result.slug);
+			res.redirect('/User/'+result.slug);
+		} else { //user is not indb
+			res.render('user', {NOPE: "Invalid user: " + summSearch, NOPE2:"Please use a summoner's whose info has been downloaded and make sure spaces and capitalizations are included"});
+		}
+	});
 });
 
-//create page for user with post and redirect
+app.get('/User', (req, res) => {
+	res.render('user');
+});
+
+app.get('/User/:slug', (req, res) => {
+	const slug = req.params.slug;
+	user.findOne({slug: slug}, function(err, ele) {
+		if (err) {
+			res.send(err);
+		} else {
+
+			//PROCESS DATA!
+			res.render('user', {ele: ele});
+		}
+	});
+});
+
 
 app.get('/Legendary', (req, res) => {
 	if (req.query.Awards === "Best") {
@@ -180,7 +405,6 @@ app.get('/RankedStats', (req, res) => {
 	if (req.query.summonerID !== "" || null) {
 		//make ranked stats 
 		//send only
-		console.log("USERNAME");
 		res.render('ranked')
 	} else {
 		res.render('ranked', {overall:overall});

@@ -4,11 +4,17 @@ const Schema = mongoose.Schema;
 
 //schema goes here
 const game = new Schema({
-	id: Number,
+	id: Number, //users id
 	gameId: Number,
 	mode: String,
 	championId: Number,
 	stats: Object, //imported from Riot Games API
+	result: Boolean,
+	level: Number,
+	championId: Number,
+	spell1: Number,
+	spell2: Number,
+	championName: String,
 });
 
 const bestOf = new Schema({

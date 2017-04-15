@@ -1,0 +1,27 @@
+
+<hr>
+</br>
+<form method="POST" action="summData">
+	View A Summoner's Data: <input type="text" name="newsummoner" value="">
+	<input type="submit" value="View Summoner!">
+</form>
+
+
+{{#if ele}}
+	<p>Summoner Name: {{ele.name}}</p>
+	<h3>LeveL: {{ele.level}}</h3>
+		{{#each ele.games as |next|}}
+			<div class=gameResult>
+				{{this.id}}
+				{{this.gameId}}
+				Champion: {{this.championId}}
+				Game Result: {{this.result}}
+				Champion: {{this.championName}}
+			</div>
+		{{/each}}
+{{/if}}
+
+<p></p>
+{{NOPE}}
+<p></p>
+{{NOPE2}}
