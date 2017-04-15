@@ -344,7 +344,7 @@ app.get('/', (req, res) => {
 								res.render('home', {NOPE: "Invalid user: " +nameS+ " please use a valid summoner name", NOPE2:"Make sure spaces and capitalizations are included."});
 							} else if (err) {
 								res.render('home', {Error: "Some error occured. Please try again"});
-								console.log("BAD FUCKING ERRROR", err);
+								console.log("BAD ERRROR", err);
 							} else {
 								console.log(response.statusCode)
 								console.log("THINK I GIVE UP");
