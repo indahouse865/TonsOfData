@@ -313,7 +313,7 @@ app.get('/', (req, res) => {
 				async.waterfall([
 					function(toCall) {
 						urlCalling = userRequest+nameS+apiKey+key;
-						console.log("No user found and searching RIOT");
+						console.log("No user found and searching RIOT", nameS);
 						request(urlCalling, function(err, response, body) {
 							if (!err && response.statusCode === 200) {
 								let Body = JSON.parse(body);
@@ -331,13 +331,13 @@ app.get('/', (req, res) => {
 										res.send(err);
 										res.send('an error has occurred, please check the server output' + err);
 									} else {
+										
+										summonerName = Body.name;
+										summonerID = Body.id;
+										reqGames(summonerName, summonerID);	 //add recent games
 										toCall(null, newUser); //exit waterfall with completion
 									}
 								});
-
-								summonerName = Body.name;
-								summonerID = Body.id;
-								reqGames(summonerName, summonerID);	 //add recent games
 
 							} else if (!err && response.statusCode === 404) {
 								console.log("ERROR CODE IS", response.statusCode);
