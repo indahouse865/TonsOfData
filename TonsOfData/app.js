@@ -315,7 +315,7 @@ app.get('/', (req, res) => {
 						urlCalling = userRequest+nameS+apiKey+key;
 						console.log("No user found and searching RIOT", nameS);
 						request(urlCalling, function(err, response, body) {
-							if (!err && response.statusCode >= 200 && response.statusCode <=400) {
+							if (!err && response.statusCode >= 200 && response.statusCode <400) {
 								console.log("REQUEST?");
 								let Body = JSON.parse(body);
 								console.log("User being added is: ", Body);
@@ -339,13 +339,14 @@ app.get('/', (req, res) => {
 									}
 								});
 
-							} else if (!err && response.statusCode === 404) {
+							} else if (!err && response.statusCode >= 400 && response.statusCode < 500) {
 								console.log("ERROR CODE IS", response.statusCode);
 								res.render('home', {NOPE: "Invalid user: " +nameS+ " please use a valid summoner name", NOPE2:"Make sure spaces and capitalizations are included."});
 							} else if (err) {
 								res.render('home', {Error: "Some error occured. Please try again"});
 								console.log("BAD FUCKING ERRROR", err);
-							} else {
+							} else if {
+								console.log(response.statusCode);
 								console.log("THINK I GIVE UP");
 							}
 						}); //actual request
