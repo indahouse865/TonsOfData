@@ -314,6 +314,7 @@ app.get('/', (req, res) => {
 					function(toCall) {
 						urlCalling = userRequest+nameS+apiKey+key;
 						console.log("No user found and searching RIOT", nameS);
+						console.log("NOT EVEN OTHER PRINTS ARE COMING OUT");
 						request(urlCalling, function(err, response, body) {
 							console.log("ASFGASDFSAFGASGASDFASDF");
 							if (!err && response.statusCode === 200) {
