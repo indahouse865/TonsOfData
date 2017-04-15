@@ -1,5 +1,5 @@
 body {
-  color: red;
+  color: #C6D4FF;
   font-family: Georgia;
   background-color: #81858c;
   font-weight: bold;
@@ -10,7 +10,7 @@ body {
 h1 {
 	font-size: 300%;
 	font-family: serif;
-	color: black;
+	color: #307473;
 	text-align: center;
 }
 
@@ -22,7 +22,7 @@ h2 {
 
 h3 {
 	font-family: Georgia;
-  color: white;
+  color: #C6D4FF;
 }
 
 form {
@@ -33,17 +33,12 @@ a:link{
 	text-decoration: none;
 }
 
-a:visited {
-	color: red;
-}
-
 .user {
 	font-size: 60%;
 	margin:0px;
 	padding:0px;
 	line-height: 1px;
 	opacity:.5;
-	color: pink;
 }
 
 .user2{
@@ -72,7 +67,7 @@ a:visited {
 
 .navbar ul {
   list-style: none;
-  background-color: #444;
+  background-color: #595959;
   text-align: center;
   padding: 0;
   margin: 0;
@@ -87,17 +82,17 @@ a:visited {
 }
  
 .navbar a {
-  color: #fff;
+  color: #C6D4FF;
   display: block;
 }
  
 .navbar a:hover {
-  background-color: #005f5f;
+  background-color: #12664F;
 }
  
 .navbar a.active {
-  background-color: #fff;
-  color: #444;
+  background-color: #595959;
+  color: #12664F;
 }
 
 .best {
