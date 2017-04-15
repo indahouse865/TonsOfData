@@ -258,6 +258,7 @@ function reqGames(un, uID) {
 
 		function(callback) {
 			console.log("SUCCEEDED IN reqGames the async");
+			callback("LAST POSSIBLE", "0");
 		}
 	],
 	function(err, newUser) {
@@ -331,20 +332,22 @@ app.get('/', (req, res) => {
 										res.send(err);
 										res.send('an error has occurred, please check the server output' + err);
 									} else {
-										
+
 										summonerName = Body.name;
 										summonerID = Body.id;
 										reqGames(summonerName, summonerID);	 //add recent games
-										toCall(null, newUser); //exit waterfall with completion
+										toCall("FIRST POSSIBLE", newUser); //exit waterfall with completion
 									}
 								});
 
 							} else if (!err && response.statusCode === 404) {
 								console.log("ERROR CODE IS", response.statusCode);
 								res.render('home', {NOPE: "Invalid user: " +nameS+ " please use a valid summoner name", NOPE2:"Make sure spaces and capitalizations are included."});
+								toCall("404", "404");
 							} else {
 								res.render('home', {Error: "Some error occured. Please try again"});
 								console.log(err);
+								toCall("800", "801");
 							}
 						}); //actual request
 
