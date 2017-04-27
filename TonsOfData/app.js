@@ -48,6 +48,7 @@ let newAssists = [];
 let newGold = [];
 let newDamage = [];
 let newHeals = [];
+let testKills = [];
 
 //All Requirements above this
 
@@ -78,9 +79,6 @@ const overall = {
 	damage: 0,	
 	heals: 0,
 };
-
-
-	
 
 function Best(checker, name) {
 	if (checker.stats.championsKilled > bestOf.kills.number) {
@@ -113,12 +111,9 @@ function Best(checker, name) {
 		bestOf.heals.summonerID = name;
 		bestOf.heals.champion = checker.championName;
 	}
-
-
 }
 
 function Worst(checker, name) {
-
 	if (checker.stats.championsKilled < worstOf.kills.number) {
 		worstOf.kills.number = checker.stats.championsKilled;
 		worstOf.kills.summonerID = name;
@@ -149,11 +144,17 @@ function Worst(checker, name) {
 		worstOf.heals.summonerID = name;
 		worstOf.heals.champion = checker.championName;
 	}
+}
 
+function filterIt(arr ,kills) { //called around lines 257 to filter out undefined results from riots data
+	let nums = arr.filter(function(ele) {
+		return typeof ele === 'number';
+	});
+	return nums;
 }
 
 //used to increment overall values for the site.
-function personal2(checker, val) {
+function personal2(checker, val) { //called in last waterfall of req games to increment overall site statistics. lines 267 or so
 	overall[val] += checker.reduce((a, v) => (a + v), overall[val]);
 }
 
@@ -227,27 +228,17 @@ function reqGames(un, uID) { //called by /get after a summoner is searched
 										Best(newGame, un);
 										Worst(newGame, un);
 									}); //end get champion name request promise
-
-									//handle best overall - undefined is 0 so ignore it
-									if (game.stats.championsKilled !== undefined) {
-										newKills.push(game.stats.championsKilled);
-									}
-									if (game.stats.numDeaths !== undefined) {
-										newDeaths.push(game.stats.numDeaths);
-									}
-									if (game.stats.assists !== undefined) {
-										newAssists.push(game.stats.assists);
-									}
-									newGold.push(game.stats.goldEarned);
-									if (game.stats.totalDamageDealtToChampions !== undefined) {
-										newDamage.push(game.stats.totalDamageDealtToChampions);
-									}
-									if (game.stats.totalHeal !== undefined) {
-										newHeals.push(game.stats.totalHeal);
-									}
 								} //end else statement where game is not found
 							}); //end user.
 						} //end if ranked game 
+						
+						//add each element to an array for each game
+						newKills.push(game.stats.championsKilled);
+						newDeaths.push(game.stats.numDeaths);
+						newAssists.push(game.stats.assists);
+						newGold.push(game.stats.goldEarned);
+						newDamage.push(game.stats.totalDamageDealtToChampions);
+						newHeals.push(game.stats.totalHeal);
 					}); //end forEach 
 					nextCall(null, "next Function"); //go to next step in the waterfall
 
@@ -263,7 +254,16 @@ function reqGames(un, uID) { //called by /get after a summoner is searched
 		},
 		//use arrays to reduce on each of these values in the overall object for the site. This data 
 		//is displayed in the top portion of /ranked
-		function(callback) {
+		function(ele, nextCall) {
+			newKills = filterIt(newKills);
+			newDeaths = filterIt(newDeaths);
+			newAssists = filterIt(newAssists);
+			newGold = filterIt(newGold);
+			newDamage = filterIt(newDamage);
+			newHeals = filterIt(newHeals);
+			nextCall(null, "next up");
+		},
+		function(nextCall) {
 			personal2(newKills, "kills");
 			personal2(newDeaths, "deaths");
 			personal2(newAssists, "assists");
@@ -384,7 +384,6 @@ app.post('/summData', (req, res) => {
 			res.send(err);
 			res.send('an error has occurred, please check the server output' + err);
 		} else if (!err && result) {
-			console.log(result.slug);
 			res.redirect('/User/'+result.slug); //use slug to redirect to that users page
 		} else { //user is not indb
 			res.render('user', {NOPE: "Invalid user: " + summSearch, NOPE2:"Please use a summoner's whose info has been downloaded and make sure spaces and capitalizations are included"});
@@ -466,32 +465,20 @@ app.get('/RankedStats', (req, res) => {
 				request(urlStats, function(err, response, stats) {
 					if (!err && response.statusCode >= 200 && response.statusCode < 400) {
 						//init object to be displayed
-						const overallStats = {
-							Kills: 0,
-							Deaths: 0,
-							Assists: 0,
-							Gold: 0,
-							Damage: 0,
-							Minions: 0,
-							Pentas: 0,
-							Quadras: 0,
-							Triples: 0,
-							Doubles: 0,					
-						};
+						const overallStats = {}; //initalize object to be edited
 						const jStats = JSON.parse(stats);
-						jStats.champions.forEach(cham => {
-							//for each champion include these stats in the overall sum
-							overallStats.Damage += cham.stats.totalDamageDealt;
-							overallStats.Pentas += cham.stats.totalPentaKills;
-							overallStats.Doubles += cham.stats.totalDoubleKills;
-							overallStats.Assists += cham.stats.totalAssists;
-							overallStats.Gold += cham.stats.totalGoldEarned;
-							overallStats.Triples += cham.stats.totalTripleKills;
-							overallStats.Kills += cham.stats.totalChampionKills;
-							overallStats.Minions += cham.stats.totalMinionKills;
-							overallStats.Quadras += cham.stats.totalQuadraKills;
-							overallStats.Deaths += cham.stats.totalDeathsPerSession;
-						}); //end forEach on jStats
+
+						overallStats.Kills = jStats.champions.reduce((prev, curr) => prev + curr.stats.totalChampionKills, 0);
+						overallStats.Deaths = jStats.champions.reduce((prev, curr) => prev + curr.stats.totalDeathsPerSession, 0);
+						overallStats.Assists = jStats.champions.reduce((prev, curr) => prev + curr.stats.totalAssists, 0);
+						overallStats.Gold = jStats.champions.reduce((prev, curr) => prev + curr.stats.totalGoldEarned, 0);
+						overallStats.Damage = jStats.champions.reduce((prev, curr) => prev + curr.stats.totalDamageDealt, 0);
+						overallStats.Minions = jStats.champions.reduce((prev, curr) => prev + curr.stats.totalMinionKills, 0);
+						overallStats.Pentas = jStats.champions.reduce((prev, curr) => prev + curr.stats.totalPentaKills, 0);
+						overallStats.Quadras = jStats.champions.reduce((prev, curr) => prev + curr.stats.totalQuadraKills, 0);
+						overallStats.Triples = jStats.champions.reduce((prev, curr) => prev + curr.stats.totalTripleKills, 0);
+						overallStats.Doubles = jStats.champions.reduce((prev, curr) => prev + curr.stats.totalDoubleKills, 0);
+
 						res.render('ranked', {overall:overall, stats: overallStats, name:tName, season:season});
 					} else if (!err && response.statusCode >= 400) {
 						console.log("error on ritos side");
