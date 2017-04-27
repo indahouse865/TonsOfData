@@ -180,7 +180,6 @@ function reqGames(un, uID) { //called by /get after a summoner is searched
 									console.log(err);
 								} else if(!err && res) {
 									//game was found inside database already: ignore it
-									console.log("game in db already");
 								} else {
 									let champName = ""; //get champion name from Riot's static data
 									const champReq = "https://global.api.riotgames.com/api/lol/static-data/NA/v1.2/champion/" + game.championId + apiKey + key; //get champion request
@@ -284,7 +283,7 @@ function reqGames(un, uID) { //called by /get after a summoner is searched
 //homepage
 app.get('/', (req, res) => {
 	if (req.query.summoner === "") { //or req.query.summoner is not in database
-		res.render('home', {error: "error: Please input a stored summonerID"});
+		res.render('home', {error: "Please input a valid summonerID"});
 	} else if (req.query.summoner) {
 		//get and clean data
 		const nameSearch = req.query.summoner;
@@ -295,7 +294,6 @@ app.get('/', (req, res) => {
 		//search database
 		user.findOne({name: nameSearch}, (err, name, count) => {
 			if (!err && name) { //found
-				console.log("USER WAS FOUND");
 				const summonerName = name.name;
 				const summonerID = name.id;
 				
@@ -321,7 +319,6 @@ app.get('/', (req, res) => {
 				async.waterfall([
 					function(toCall) {
 						const urlCalling = userRequest+nameS+apiKey+key; //https://na.api.riotgames.com/api/lol/NA/v1.4/summoner/by-name/doomsy135?api_key= +key is a sample url
-						console.log("No user found and searching RIOT", nameS);
 						request(urlCalling, function(err, response, body) {
 							if (!err && response.statusCode >= 200 && response.statusCode <400) {
 								const Body = JSON.parse(body); //responses are in json
@@ -406,7 +403,7 @@ app.post('/User/summData', (req, res) => {
 		} else if (!err && result) {
 			res.redirect('/User/'+result.slug);
 		} else { //user is not indb
-			res.render('user', {NOPE: "Invalid user: " + summSearch, NOPE2:"Please use a summoner's whose info has been downloaded and make sure spaces and capitalizations are included"});
+			res.render('user', {NOPE: "Invalid user: " + summSearch, NOPE2:"Please use a summoner's whose info has been downloaded and make sure spaces and capitalizations are included. TY :X"});
 		}
 	});
 });
@@ -437,7 +434,8 @@ app.get('/Legendary', (req, res) => {
 //display overall stats as well as allows users to search for overall stats
 //of a player in any given season
 app.get('/RankedStats', (req, res) => {
-	if (req.query.summonerID && req.query.season) {
+	if (req.query.summonerID != "" && req.query.season) {
+
 		const tName = req.query.summonerID;
 		//cleaned version of name for object
 		let nameT=tName.toLowerCase();
@@ -454,8 +452,12 @@ app.get('/RankedStats', (req, res) => {
 					} else if (err) {
 						console.log(err);
 						res.render('ranked', {overall:overall, err:"There was an error with the request. Please Try again later."});
+					} else if (!err && response.statusCode >= 400 && response.statusCode < 500) {
+						console.log("bad summoner name request");
+						res.render('ranked', {overall:overall, err:"Please make sure that the summoner name is valid and that they were active in the season selected."});
 					} else {
-						console.log("error on our side");
+						console.log(response.statusCode);
+						console.log("error on our side in name search");
 						res.render('ranked', {overall:overall, err:"There was an error on our side... be back up soon"});
 					}
 				}); //end search user request
@@ -480,11 +482,11 @@ app.get('/RankedStats', (req, res) => {
 						overallStats.Doubles = jStats.champions.reduce((prev, curr) => prev + curr.stats.totalDoubleKills, 0);
 
 						res.render('ranked', {overall:overall, stats: overallStats, name:tName, season:season});
-					} else if (!err && response.statusCode >= 400) {
-						console.log("error on ritos side");
+					} else if (!err && response.statusCode >= 400 && response.statusCode < 500) {
+						console.log("error on ritos side: ", response.statusCode);
 						res.render('ranked', {overall:overall, err:"Please make sure that the summoner name is valid and that they were active in the season selected."});
 					} else {
-						console.log("error on our side");
+						console.log("error on our side: ", response.statusCode);
 						res.render('ranked', {overall:overall, err:"There was an error on our side... be back up soon"});
 					}
 				}); //end stats request
