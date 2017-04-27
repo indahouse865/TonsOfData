@@ -2,13 +2,35 @@
 </br>
 {{#each overall}}
 Overall {{@key}}:
-is {{this.number}}</br>
+is {{this}}</br>
 {{/each}}
 </br>
 <hr>
 
-<h4>Select a summoner whose ranked stats to show</h4>
+<h4>Search for a summoner whose ranked stats to show</h4>
 <form method="GET" action="">
 	Summoner Name<input type="text" name="summonerID" value="">
-	<input type="submit" name="Search">
+	Season: <select name="season">
+		<option value ="Season3">Season 3</option>
+		<option value ="SEASON2014">Season 4</option>
+		<option value ="SEASON2015">Season 5</option>
+		<option value ="SEASON2016">Season 6</option>
+		<option value ="SEASON2017">Season 7</option>
+	</select>
+	<input type="submit">
 </form>
+
+<p></p>
+{{err}}
+
+</br>
+{{#if stats}}
+Overall Ranked Stats for -- {{name}} in {{season}}
+</br>
+</br>
+{{#each stats}}
+Total {{@key}}: {{this}}</br>
+{{/each}}
+
+
+{{/if}}

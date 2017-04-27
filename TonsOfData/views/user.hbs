@@ -1,5 +1,4 @@
 
-<hr>
 </br>
 <form method="POST" action="summData">
 	View A Summoner's Data: <input type="text" name="newsummoner" value="">
@@ -7,37 +6,113 @@
 </form>
 
 
+
 {{#if ele}}
-	<p>Summoner Name: {{ele.name}}</p>
-	<h3>LeveL: {{ele.level}}</h3>
+</br>
+	<h3>Summoner Name: {{ele.name}} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Level: {{ele.level}}</h3>
+	<p>Recent Games!</p>
 	<div class="gameResult">
 		{{#each ele.games}}
-			<div class="gameStat">
-			User ID: {{this.id}}
-			</div>
+			<div class="gameC">
+				<div class="gameStat" style="border-right: 1px solid black">
+				Game Mode: {{this.mode}}
+				</div>
 
-			<div class="gameStat">
-			Game ID: {{this.gameId}}
+				<div class="gameStat" style="border-right: 1px solid black">
+				{{#if this.result}}
+				Game Result: Win
+				{{else}}
+				GameResult: Loss
+				{{/if}}
+				</div>
+				
+				<div class="gameStat">
+				Champion: {{this.championName}}
+				</div>
+
+				</br>
+
+				<div class="gameStat" style="border-right: 1px solid black">
+				{{#if this.stats.championsKilled}}
+				Kills: {{this.stats.championsKilled}}
+				{{else}}
+				Kills: 0
+				{{/if}}
+				</div>
+				
+				<div class="gameStat" style="border-right: 1px solid black">
+				{{#if this.stats.numDeaths}}
+				Deaths: {{this.stats.numDeaths}}
+				{{else}}
+				Deaths: 0
+				{{/if}}
+				</div>
+				
+				<div class="gameStat" style="border-right: 1px solid black">
+				{{#if this.stats.assists}}
+				Assists: {{this.stats.assists}}
+				{{else}}
+				Assists: 0
+				{{/if}}
+				</div>
+
+				<div class="gameStat" style="border-right: 1px solid black">
+				Gold: {{this.stats.goldEarned}}
+				</div>
+
+				<div class="gameStat" style="border-right: 1px solid black">
+				{{#if this.stats.wardPlaced}}
+				Wards Placed: {{this.stats.wardPlaced}}
+				{{else}}
+				No wards placed X.X
+				{{/if}}
+				</div>
+				
+				<div class="gameStat" style="border-right: 1px solid black">
+				{{#if this.stats.totalHeal}}
+				Total Healed: {{this.stats.totalHeal}}
+				{{else}}
+				Total Healed: NONE
+				{{/if}}
+				</div>
+				
+				<div class="gameStat">
+				{{#if this.stats.minionsKilled}}
+				Lane Minions: {{this.stats.minionsKilled}}
+				{{else}}
+				Lane Minions: 0
+				{{/if}}
+				</div>
+				
+				</br>
+
+				<div class="gameStat" style="border-right: 1px solid black">
+				{{#if this.stats.totalDamageDealtToChampions}}
+				Damage To Champs: {{this.stats.totalDamageDealtToChampions}}
+				{{else}}
+				Damage To Champs: 0? Really? Come one
+				{{/if}}
+				</div>
+				
+				<div class="gameStat" style="border-right: 1px solid black">
+				{{#if this.stats.totalDamageDealt}}
+				Total Dealt: {{this.stats.totalDamageDealt}}
+				{{else}}
+				Total Damage Dealt: 0? you have to try for that one
+				{{/if}}
+				</div>
+				
+				<div class="gameStat">
+				{{#if this.stats.totalDamageTaken}}
+				Damage Taken: {{this.stats.totalDamageTaken}}
+				{{else}}
+				No Damage Taken. You're a GOD
+				{{/if}}
+				</div>
+				
+				<div class="clearer"></div>
+				</br></br>
 			</div>
-			
-			<div class="gameStat">
-			Champion ID:Champion: {{this.championId}}
-			</div>
-			
-			<div class="gameStat">
-			{{#if this.result}}
-			Game Result: Win
-			{{else}}
-			GameResult: Loss
-			{{/if}}
-			</div>
-			
-			<div class="gameStat">
-			Champion: {{this.championName}}
-			</div>
-			
-			</br>
-			<div class="Clearer"></div>
 		{{/each}}
 	</div>
 {{/if}}
