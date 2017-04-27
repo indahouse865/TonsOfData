@@ -1,8 +1,3 @@
-//lines to look at with joe 99 and  270 + 285
-//also how to make sure bestOf is still a separate collection
-//hw 5 grade?
-
-// app.js
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -14,7 +9,7 @@ require('./db');
 const mongoose = require('mongoose');
 const user = mongoose.model('user');
 const gameList = mongoose.model('game');
-const best = mongoose.model('bestOf');
+//const best = mongoose.model('bestOf');
 
 //public middleware
 app.set('views', path.join(__dirname, 'views'));
@@ -36,14 +31,17 @@ const key = confKey.key; //true key
 
 //api key
 const request = require('request');
-const userRequest = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/"
+const userRequest = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
 const apiKey = "?api_key=";
 
+//name of champion string
 let nameS = "";
 
+//used for game objects
 const gameRequest = "https://na.api.riotgames.com/api/lol/NA/v1.3/game/by-summoner/";
 const recent = "/recent?api_key=";
 
+//initalize arrays for keeping track of overall
 let newKills = [];
 let newDeaths = [];
 let newAssists = [];
@@ -54,7 +52,7 @@ let newHeals = [];
 //All Requirements above this
 
 //bestOf object to keep track of best of data in the app
-let bestOf = {
+const bestOf = {
 	kills: {number: 0, summonerID: "test", champion: "NAME"},
 	deaths: {number: 100, summonerID: "test", champion: "NAME"},
 	assists: {number: 0, summonerID: "test", champion: "NAME"},
@@ -63,7 +61,7 @@ let bestOf = {
 	damage: {number: 0, summonerID: "test", champion: "NAME"},
 };
 
-let worstOf = {
+const worstOf = {
 	kills: {number: 100, summonerID: "test", champion: "NAME"},
 	deaths: {number: 0, summonerID: "test", champion: "NAME"},
 	assists: {number: 100, summonerID: "test", champion: "NAME"},
@@ -72,14 +70,14 @@ let worstOf = {
 	heals: {number: 100000, summonerID: "test", champion: "NAME"},
 };
 
-let overall = {
+const overall = {
 	kills: 0,
 	deaths: 0,
 	assists: 0,
 	gold: 0,
 	damage: 0,	
 	heals: 0,
-}
+};
 
 
 	
@@ -159,10 +157,9 @@ function personal2(checker, val) {
 	overall[val] += checker.reduce((a, v) => (a + v), overall[val]);
 }
 
-function reqGames(un, uID) {
+function reqGames(un, uID) { //called by /get after a summoner is searched
 	const gamesURL = gameRequest + uID + recent + key;
-
-	newKills = [];
+	newKills = []; //reset the arrays for reduce
 	newDeaths = [];
 	newAssists = [];
 	newGold = [];
@@ -173,38 +170,32 @@ function reqGames(un, uID) {
 		function(nextCall) {
 			request(gamesURL, function(err, response, games) {
 				if (!err && response.statusCode === 200) { //good response
-
-					let gamesO = JSON.parse(games);
+					const gamesO = JSON.parse(games);
 					gamesO.games.forEach(game => {
 						if (game.subType === "RANKED_SOLO_5x5" || game.subType === "RANKED_TEAM_5x5" || game.subType === "RANKED_FLEX_SR") { //only consider ranked games
 
-
-							//correct search!
-							gameList.findOne({id: uID, gameId:game.gameId}, (err, res, count) => {  
-							//user.find({id: uID, games: {$elemMatch: {gameId: game.gameId}}}, (err, res, count) => {
+							gameList.findOne({id: uID, gameId:game.gameId}, (err, res, count) => {
 								if (err) {
 									console.log(err);
 								} else if(!err && res) {
-
+									//game was found inside database already: ignore it
+									console.log("game in db already");
 								} else {
-									let champName = "";
-									champReq = "https://global.api.riotgames.com/api/lol/static-data/NA/v1.2/champion/" + game.championId + apiKey + key; //get champion request
+									let champName = ""; //get champion name from Riot's static data
+									const champReq = "https://global.api.riotgames.com/api/lol/static-data/NA/v1.2/champion/" + game.championId + apiKey + key; //get champion request
 									request(champReq, function(err, response, champ) {
 										if (!err && response.statusCode === 200) {
-											let cData = JSON.parse(champ);
+											const cData = JSON.parse(champ);
 											champName = cData.name;
 										}
-
-
-										let gameMode = ""
+										//set gamemode
+										let gameMode = "";
 										if (game.subType === "RANKED_FLEX_SR") {
 											gameMode = "Flex";
 										} else {
-											gameMode = "Soloq"
+											gameMode = "Soloq";
 										}
-									
-
-										const newGame = new gameList({
+										const newGame = new gameList({ //initalize new object for game schema
 											id: uID,
 											gameId: game.gameId,
 											mode: gameMode,
@@ -212,21 +203,18 @@ function reqGames(un, uID) {
 											stats: game.stats, //imported from Riot Games APi
 											result: game.stats.win,
 											level: game.level,
-											championId: game.championId,
 											spell1: game.spell1,
 											spell2: game.spell1,
 											championName: champName,
 										});
-
 										newGame.save(function(err, newG, count) {
 											if (err) {
 												console.log("ERROR SAVING");
 												res.send(err);
 												res.send('an error has occurred, please check the server output' + err);
-											} else {
 											}
 										});
-
+										//add game to user object
 										user.findOneAndUpdate({name:un}, {$push: {games: newGame}}, function(err, ele, count) {
 											if (err) {
 												console.log("ERROR LOADING GAME INTO DATABASE");
@@ -235,13 +223,12 @@ function reqGames(un, uID) {
 												console.log("Game was added!", newGame.gameId);
 											}
 										}); //end save game to user.games lsit
-
+										//check each game against the best and worst stats. Improvements can be made
 										Best(newGame, un);
 										Worst(newGame, un);
 									}); //end get champion name request promise
 
-									//handle best overall
-
+									//handle best overall - undefined is 0 so ignore it
 									if (game.stats.championsKilled !== undefined) {
 										newKills.push(game.stats.championsKilled);
 									}
@@ -262,27 +249,20 @@ function reqGames(un, uID) {
 							}); //end user.
 						} //end if ranked game 
 					}); //end forEach 
-
-					/*
-					let maxKill = gamesO.reduce((prev, cur) => {
-						prev > cur ? prev : cur
-					}, 0);
-					*/
-					//TODO implement filters for best worst and personal ehre
-
-					nextCall(null, "next Function");
+					nextCall(null, "next Function"); //go to next step in the waterfall
 
 				} else if (!err && response.statusCode === 404) { //some error on riots side
 					console.log("There was an error on the RIOT side");
 					nextCall(null, "404");
-				}  else { //internal error
+				} else { //internal error
 					console.log("ERROR LOADING RECENT GAMES");
 					console.log(err);
 					nextCall(null, "Other Errors");
 				}
 			});
 		},
-
+		//use arrays to reduce on each of these values in the overall object for the site. This data 
+		//is displayed in the top portion of /ranked
 		function(callback) {
 			personal2(newKills, "kills");
 			personal2(newDeaths, "deaths");
@@ -290,28 +270,24 @@ function reqGames(un, uID) {
 			personal2(newGold, "gold");
 			personal2(newDamage, "damage");
 			personal2(newHeals, "heals");
-			console.log("SUCCEEDED IN reqGames the async", callback);
 		}
-	],
+	], //end waterfall
 	function(err, newUser) {
 		if(err) {
 			console.log("ERROR in req games waterfall: ", err);
 			return;
-		} else {
-			
 		}
 	}); 
-}
+} //end reqGames
 
 //Route Handlers
+//homepage
 app.get('/', (req, res) => {
 	if (req.query.summoner === "") { //or req.query.summoner is not in database
 		res.render('home', {error: "error: Please input a stored summonerID"});
 	} else if (req.query.summoner) {
-
 		//get and clean data
-		nameSearch = req.query.summoner;
-
+		const nameSearch = req.query.summoner;
 		//cleaned version of name for object
 		nameS=nameSearch.toLowerCase();
 		nameS=nameS.replace(/\s+/g, "");
@@ -320,24 +296,22 @@ app.get('/', (req, res) => {
 		user.findOne({name: nameSearch}, (err, name, count) => {
 			if (!err && name) { //found
 				console.log("USER WAS FOUND");
-				summonerName = name.name;
-				summonerID = name.id;
+				const summonerName = name.name;
+				const summonerID = name.id;
 				
 				async.waterfall([
-					function(callback) {
+					function(callback) { //load recent games
 						reqGames(summonerName, summonerID);
 						callback(null);
 					},
-					function(callback) {
+					function(callback) { //render the home page with user
 						res.render('home', {existing:name});
 						callback(null,':D');
 					}
-
 				],
-				function (err, status) {
+				function (err, status) { //end of waterfall
 					if (err) {
 						console.log("ERROR IN GET db WATERFALL!: ", err);
-					} else {//console.log(status);
 					}
 				});		
 
@@ -346,13 +320,12 @@ app.get('/', (req, res) => {
 			} else { //adding user to database
 				async.waterfall([
 					function(toCall) {
-						urlCalling = userRequest+nameS+apiKey+key;
+						const urlCalling = userRequest+nameS+apiKey+key; //https://na.api.riotgames.com/api/lol/NA/v1.4/summoner/by-name/doomsy135?api_key= +key is a sample url
 						console.log("No user found and searching RIOT", nameS);
 						request(urlCalling, function(err, response, body) {
 							if (!err && response.statusCode >= 200 && response.statusCode <400) {
-								let Body = JSON.parse(body);
-								console.log("User being added is: ", Body);
-								let newUser = new user({
+								const Body = JSON.parse(body); //responses are in json
+								const newUser = new user({ //create new user and save it in the db
 									id: Body.id,
 									name: Body.name,
 									level: Body.summonerLevel, 
@@ -364,23 +337,21 @@ app.get('/', (req, res) => {
 										res.send(err);
 										res.send('an error has occurred, please check the server output' + err);
 									} else {
-
-										summonerName = Body.name;
-										summonerID = Body.id;
+										const summonerName = Body.name;
+										const summonerID = Body.id;
 										reqGames(summonerName, summonerID);	 //add recent games
 										toCall(null, newUser); //exit waterfall with completion
 									}
 								});
 
-							} else if (!err && response.statusCode >= 400 && response.statusCode < 500) {
+							} else if (!err && response.statusCode >= 400 && response.statusCode < 500) { //invalid summoner name
 								console.log("ERROR CODE IS", response.statusCode);
 								res.render('home', {NOPE: "Invalid user: " +nameS+ " please use a valid summoner name", NOPE2:"Make sure spaces and capitalizations are included."});
-							} else if (err) {
+							} else if (err) { //error occured somewhere on out side
 								res.render('home', {Error: "Some error occured. Please try again"});
 								console.log("BAD ERRROR", err);
 							} else {
-								console.log(response.statusCode)
-								console.log("THINK I GIVE UP");
+								console.log(response.statusCode);
 							}
 						}); //actual request
 
@@ -393,7 +364,7 @@ app.get('/', (req, res) => {
 						console.log("ERROR IN new user water fall!: ",err);
 						return;
 					} else {
-						res.render('home', {newUser: newUser})
+						res.render('home', {newUser: newUser});
 					}
 				}); //callback function
 
@@ -404,6 +375,7 @@ app.get('/', (req, res) => {
 	}
 });
 
+//after a user searches a user in our db
 app.post('/summData', (req, res) => {
 	const summSearch = req.body.newsummoner;
 	user.findOne({name: summSearch}, (err, result, count) => {
@@ -413,7 +385,7 @@ app.post('/summData', (req, res) => {
 			res.send('an error has occurred, please check the server output' + err);
 		} else if (!err && result) {
 			console.log(result.slug);
-			res.redirect('/User/'+result.slug);
+			res.redirect('/User/'+result.slug); //use slug to redirect to that users page
 		} else { //user is not indb
 			res.render('user', {NOPE: "Invalid user: " + summSearch, NOPE2:"Please use a summoner's whose info has been downloaded and make sure spaces and capitalizations are included"});
 		}
@@ -422,8 +394,9 @@ app.post('/summData', (req, res) => {
 
 app.get('/User', (req, res) => {
 	res.render('user');
-});
+}); //render user search page
 
+//if invalid search is followed by a valid one, use it to redirect to the correct page. Same as /summData
 app.post('/User/summData', (req, res) => {
 	const summSearch = req.body.newsummoner;
 	user.findOne({name: summSearch}, (err, result, count) => {
@@ -437,19 +410,21 @@ app.post('/User/summData', (req, res) => {
 			res.render('user', {NOPE: "Invalid user: " + summSearch, NOPE2:"Please use a summoner's whose info has been downloaded and make sure spaces and capitalizations are included"});
 		}
 	});
-})
+});
 
+//page displayed with username as slug
 app.get('/User/:slug', (req, res) => {
 	const slug = req.params.slug;
-	user.findOne({slug: slug}, function(err, ele) {
+	user.findOne({slug: slug}, function(err, ele) { //returns the user object stored in db
 		if (err) {
 			res.send(err);
 		} else {
-			res.render('user', {ele: ele, slug: slug, space:"     "});
+			res.render('user', {ele: ele, slug: slug}); //display of the objects/stats handled in hbs
 		}
 	});
 });
 
+//represents the best and worst forms, data handled in hbs
 app.get('/Legendary', (req, res) => {
 	if (req.query.Awards === "Best") {
 		res.render('best', {bestOf: bestOf});
@@ -460,30 +435,24 @@ app.get('/Legendary', (req, res) => {
 	}
 });
 
-function getS(uID) {
-
-}
-
+//display overall stats as well as allows users to search for overall stats
+//of a player in any given season
 app.get('/RankedStats', (req, res) => {
-
 	if (req.query.summonerID && req.query.season) {
-
-		let tName = req.query.summonerID;
-
+		const tName = req.query.summonerID;
 		//cleaned version of name for object
 		let nameT=tName.toLowerCase();
 		nameT=nameT.replace(/\s+/g, "");
-		let season = req.query.season;
-
+		const season = req.query.season; //get season andd scrubbed un
 		async.waterfall([
 			function(callback) {
-				urlCalling = userRequest+nameT+apiKey+key;
+				const urlCalling = userRequest+nameT+apiKey+key; //have to get id associated with acct first
 				request(urlCalling, function(err, response, body) {
 					if(!err && response.statusCode >= 200 && response.statusCode < 400) {
-						let idBody = JSON.parse(body);
-						let callID = idBody.id;
-						callback(null, callID);
-					} else  if (err) {
+						const idBody = JSON.parse(body);
+						const callID = idBody.id;
+						callback(null, callID); //successfully retrieved id. continue waterfall
+					} else if (err) {
 						console.log(err);
 						res.render('ranked', {overall:overall, err:"There was an error with the request. Please Try again later."});
 					} else {
@@ -492,11 +461,12 @@ app.get('/RankedStats', (req, res) => {
 					}
 				}); //end search user request
 			},
-			function(callID, callback) {
-				urlStats = 'https://na.api.riotgames.com/api/lol/NA/v1.3/stats/by-summoner/' + callID + '/ranked?season=' + season + '&api_key=' + key;
+			function(callID, callback) { //use id found above to make requests about overall ranked stats
+				const urlStats = 'https://na.api.riotgames.com/api/lol/NA/v1.3/stats/by-summoner/' + callID + '/ranked?season=' + season + '&api_key=' + key;
 				request(urlStats, function(err, response, stats) {
 					if (!err && response.statusCode >= 200 && response.statusCode < 400) {
-						let overallStats = {
+						//init object to be displayed
+						const overallStats = {
 							Kills: 0,
 							Deaths: 0,
 							Assists: 0,
@@ -508,9 +478,9 @@ app.get('/RankedStats', (req, res) => {
 							Triples: 0,
 							Doubles: 0,					
 						};
-
-						let jStats = JSON.parse(stats);
+						const jStats = JSON.parse(stats);
 						jStats.champions.forEach(cham => {
+							//for each champion include these stats in the overall sum
 							overallStats.Damage += cham.stats.totalDamageDealt;
 							overallStats.Pentas += cham.stats.totalPentaKills;
 							overallStats.Doubles += cham.stats.totalDoubleKills;
@@ -522,8 +492,7 @@ app.get('/RankedStats', (req, res) => {
 							overallStats.Quadras += cham.stats.totalQuadraKills;
 							overallStats.Deaths += cham.stats.totalDeathsPerSession;
 						}); //end forEach on jStats
-
-						res.render('ranked', {overall:overall, stats: overallStats, name:tName, season:season})
+						res.render('ranked', {overall:overall, stats: overallStats, name:tName, season:season});
 					} else if (!err && response.statusCode >= 400) {
 						console.log("error on ritos side");
 						res.render('ranked', {overall:overall, err:"Please make sure that the summoner name is valid and that they were active in the season selected."});
@@ -534,14 +503,12 @@ app.get('/RankedStats', (req, res) => {
 				}); //end stats request
 				callback(null, '::DD');
 			} //callback
-
 		],
 		function(err, result) {
 			if (err) {
-				console.log("Err in waterfall Ranked: ", err)
+				console.log("Err in waterfall Ranked: ", err);
 			}
-		});
-
+		}); //end waterfall
 	} else {
 		res.render('ranked', {overall:overall});
 	}
