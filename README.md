@@ -19,7 +19,7 @@ An Example User:
 
 ```javascript
 {
-  name: "Cruknarg",
+  name: "Zven",
   id: 64872106812
   games: //an array of refrences to different games
 }
