@@ -1,5 +1,5 @@
 # Tons Of Data
-
+# This app will no longer function as Riot Games has released a new api and this app is no longer being updated to support said API
 ## Overview
 
 Learning what to focus on next in a game of League is daunting. There are so many micro and macro aspects to take note of in every game. Why try and manage them yourself, instead let Tons Of Data do it for you.
@@ -63,20 +63,16 @@ An Example of Total Ranked Stats
 
 / - Homepage and /summoner page showing inital page and page after a player is searched
 
-![homepage](documentation/home-and-summ.jpg)
 
 /summonerID:slug/game:slug and /bestOf- pages for showing specific game information and the overall best stats on the site
 
-![game and legendary](documentation/game-and-legendary.jpg)
 
 /bestOf/slug and /rankedStats - pages for a persons individual best of stats and the overall combined ranked stats of all games
 
-![ranked stats](documentation/stats-and-ranked.jpg)
 
 ## Site map
 Here is a site map for what the site will look like:
 
-![sitemap](documentation/sitemap.jpg)
 
 ## User Stories or Use Cases
 
